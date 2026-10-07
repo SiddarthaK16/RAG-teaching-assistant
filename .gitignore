@@ -1,0 +1,11 @@
+/videos/
+/transcripts/
+/.venv/
+/.env
+/.env.*
+!/\.env.example
+__pycache__/
+*.py[cod]
+/chroma_db/
+/vector_store/
+.codex

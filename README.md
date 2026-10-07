@@ -27,33 +27,71 @@ This should make it easier to locate a topic, but results will depend on transcr
 
 Large media and generated artifacts are excluded from Git in `.gitignore`.
 
-## Local setup
+## Setup on a Windows laptop
 
-Activate the Conda environment:
+Run these commands in **Anaconda Prompt** or PowerShell with Conda available.
 
-```bash
+### 1. Clone the project
+
+```powershell
+git clone https://github.com/SiddarthaK16/RAG-teaching-assistant.git rag-teaching-assistant
+cd rag-teaching-assistant
+```
+
+### 2. Create the Conda environment and install Whisper
+
+```powershell
+conda create -n rag python=3.12 -y
 conda activate rag
+conda install -c conda-forge ffmpeg -y
+python -m pip install --upgrade pip
+python -m pip install -U openai-whisper
 ```
 
-Create a folder for transcripts:
+### 3. Add the videos
 
-```bash
-mkdir -p transcripts
+Video files are excluded from Git because they are large. Copy them separately into the project's `videos` folder. For example, if they are on a USB drive:
+
+```powershell
+New-Item -ItemType Directory -Force videos, transcripts
+Copy-Item "E:\videos\*.mp4" .\videos\
+Get-ChildItem .\videos\*.mp4
 ```
 
-Transcribe one lecture first to check accuracy:
+Change `E:\videos` to the folder where the MP4s are stored.
 
-```bash
-whisper "videos/01-introduction-to-neural-networks-and-deep-learning-training-deep-nns.mp4" \
-  --model small \
-  --language English \
-  --device cpu \
-  --fp16 False \
-  --output_format json \
-  --output_dir transcripts
+### 4. Download the Whisper medium model
+
+The model weights download on first use. This command downloads and loads the model once without transcribing a video. Whisper caches the weights under the user's home directory for later use.
+
+```powershell
+python -c "import whisper; whisper.load_model('medium'); print('Whisper medium is ready')"
 ```
 
-Whisper's JSON output includes transcript segments with start and end times. Once the transcript quality is acceptable, the same command can be run for each video.
+### 5. Transcribe one lecture and record elapsed time
+
+Start with one lecture and review its JSON transcript. The `medium` model is slower than `small`, especially when running on CPU.
+
+```powershell
+$timer = [System.Diagnostics.Stopwatch]::StartNew()
+whisper ".\videos\01-introduction-to-neural-networks-and-deep-learning-training-deep-nns.mp4" --model medium --language English --device cpu --fp16 False --output_format json --output_dir transcripts
+$timer.Stop()
+$timer.Elapsed
+```
+
+Whisper's JSON output includes transcript segments with start and end times. To transcribe every video with the `medium` model, load the model once, and print per-video and total elapsed times, run:
+
+```powershell
+python .\transcribing.py
+```
+
+The script uses CUDA if PyTorch detects an NVIDIA GPU; otherwise, it uses the CPU. It skips JSON transcripts that already exist. To redo them, run:
+
+```powershell
+python .\transcribing.py --overwrite
+```
+
+The model and transcripts stay local. If the later embedding step uses OpenAI's API, transcript chunks will be sent to that API for embedding.
 
 ## Planned data for each chunk
 
