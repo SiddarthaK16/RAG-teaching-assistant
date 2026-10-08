@@ -131,13 +131,40 @@ Create embeddings for the chunks and save them in the local Chroma database:
 python .\src\embed_chunks.py
 ```
 
-Search for a topic or question:
+Search for a topic or question and get an answer based only on the retrieved lecture text:
 
 ```powershell
-python .\src\search_chunks.py "How does transfer learning work?"
+python .\src\answer_question.py "How does transfer learning work?"
 ```
 
-The first run downloads `BAAI/bge-small-en-v1.5`. After that, embedding and search run locally. The vector database is stored in `chroma_db/`, which is ignored by Git.
+To generate an answer from retrieved passages with a local language model, install [Ollama](https://ollama.com/download), download the Qwen model, and run:
+
+```powershell
+ollama pull qwen3:4b
+python .\src\answer_question.py "How does transfer learning work?"
+```
+
+The first run downloads `BAAI/bge-small-en-v1.5`. After that, embedding, retrieval, and answer generation run locally. The vector database is stored in `chroma_db/`, which is ignored by Git. Answers cite the retrieved lecture passages and timestamps.
+
+Use the same command with a mode to explain or summarize a topic, or create a quiz. Each task uses retrieved transcript excerpts only:
+
+```powershell
+python .\src\answer_question.py --mode explain "How does self-supervised learning work?"
+python .\src\answer_question.py --mode summarize "Transformers and masking"
+python .\src\answer_question.py --mode quiz --quiz-count 5 "Word embeddings"
+```
+
+The quiz mode creates multiple-choice questions with an answer key. Increase `--top-k` when you want the model to draw from more retrieved passages, for example `--top-k 12`.
+
+### 8. Launch the local web app
+
+Install Streamlit from `requirements.txt`, then start the app from the project root:
+
+```bash
+streamlit run src/app.py
+```
+
+The app provides Ask, Explain, Summarize, and Quiz modes, shows local model/index status, and lets you expand a citation to read its transcript excerpt or play the local video from that timestamp.
 
 ## Planned data for each chunk
 
