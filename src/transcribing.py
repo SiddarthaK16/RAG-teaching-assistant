@@ -11,9 +11,9 @@ import torch
 import whisper
 
 
-PROJECT_DIR = Path(__file__).resolve().parent
-VIDEO_DIR = PROJECT_DIR / "videos"
-TRANSCRIPT_DIR = PROJECT_DIR / "transcripts"
+PROJECT_ROOT = Path(__file__).resolve().parents[1]
+VIDEO_DIR = PROJECT_ROOT / "videos"
+TRANSCRIPT_DIR = PROJECT_ROOT / "transcripts"
 SUPPORTED_VIDEO_EXTENSIONS = {".mp4", ".m4v", ".mov", ".mkv", ".webm", ".avi"}
 
 

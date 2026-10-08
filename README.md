@@ -82,13 +82,13 @@ $timer.Elapsed
 Whisper's JSON output includes transcript segments with start and end times. To transcribe every video with the `medium` model, load the model once, and print per-video and total elapsed times, run:
 
 ```powershell
-python .\transcribing.py
+python .\src\transcribing.py
 ```
 
 The script uses CUDA if PyTorch detects an NVIDIA GPU; otherwise, it uses the CPU. It skips JSON transcripts that already exist. To redo them, run:
 
 ```powershell
-python .\transcribing.py --overwrite
+python .\src\transcribing.py --overwrite
 ```
 
 The model and transcripts stay local. This project uses `BAAI/bge-small-en-v1.5` for local embeddings; its model weights download from Hugging Face the first time the embedding or search script runs.
@@ -98,13 +98,13 @@ The model and transcripts stay local. This project uses `BAAI/bge-small-en-v1.5`
 After the transcripts are ready, run:
 
 ```powershell
-python .\chunking.py
+python .\src\chunking.py
 ```
 
 This reads JSON files from `transcripts/` and writes one JSON object per line to `chunks/chunks.jsonl`. Each chunk includes its text, source video, start/end times, and word count. The defaults are 280 words per chunk with 40 words repeated between neighboring chunks. This smaller size is intended to stay within the local BGE embedding model's 512-token input limit. To change those settings or the paths:
 
 ```powershell
-python .\chunking.py --max-words 280 --overlap-words 40 --output .\chunks\chunks.jsonl
+python .\src\chunking.py --max-words 280 --overlap-words 40 --output .\chunks\chunks.jsonl
 ```
 
 The generated `chunks/` folder is ignored by Git, like the source transcripts.
@@ -112,7 +112,7 @@ The generated `chunks/` folder is ignored by Git, like the source transcripts.
 To make a CSV copy for spreadsheet inspection, run:
 
 ```powershell
-python .\chunks_to_csv.py
+python .\src\chunks_to_csv.py
 ```
 
 This writes `chunks/chunks.csv`, with one row per chunk and separate columns for the lecture, timestamps, word count, and text. The JSONL file remains the input format for embedding.
@@ -128,13 +128,13 @@ python -m pip install -r requirements.txt
 Create embeddings for the chunks and save them in the local Chroma database:
 
 ```powershell
-python .\embed_chunks.py
+python .\src\embed_chunks.py
 ```
 
 Search for a topic or question:
 
 ```powershell
-python .\search_chunks.py "How does transfer learning work?"
+python .\src\search_chunks.py "How does transfer learning work?"
 ```
 
 The first run downloads `BAAI/bge-small-en-v1.5`. After that, embedding and search run locally. The vector database is stored in `chroma_db/`, which is ignored by Git.

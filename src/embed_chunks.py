@@ -12,9 +12,9 @@ import chromadb
 from sentence_transformers import SentenceTransformer
 
 
-PROJECT_DIR = Path(__file__).resolve().parent
-DEFAULT_INPUT = PROJECT_DIR / "chunks" / "chunks.jsonl"
-DEFAULT_STORE = PROJECT_DIR / "chroma_db"
+PROJECT_ROOT = Path(__file__).resolve().parents[1]
+DEFAULT_INPUT = PROJECT_ROOT / "chunks" / "chunks.jsonl"
+DEFAULT_STORE = PROJECT_ROOT / "chroma_db"
 DEFAULT_MODEL = "BAAI/bge-small-en-v1.5"
 DEFAULT_COLLECTION = "lecture_chunks_bge_small_en_v1_5"
 METADATA_FIELDS = (

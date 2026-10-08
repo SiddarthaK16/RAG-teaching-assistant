@@ -8,9 +8,9 @@ from pathlib import Path
 from typing import Any
 
 
-PROJECT_DIR = Path(__file__).resolve().parent
-DEFAULT_TRANSCRIPT_DIR = PROJECT_DIR / "transcripts"
-DEFAULT_OUTPUT = PROJECT_DIR / "chunks" / "chunks.jsonl"
+PROJECT_ROOT = Path(__file__).resolve().parents[1]
+DEFAULT_TRANSCRIPT_DIR = PROJECT_ROOT / "transcripts"
+DEFAULT_OUTPUT = PROJECT_ROOT / "chunks" / "chunks.jsonl"
 
 
 def make_chunks(transcript: dict[str, Any], source_file: str, max_words: int, overlap_words: int) -> list[dict[str, Any]]:

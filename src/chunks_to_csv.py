@@ -13,9 +13,9 @@ except ImportError:
     pd = None
 
 
-PROJECT_DIR = Path(__file__).resolve().parent
-DEFAULT_INPUT = PROJECT_DIR / "chunks" / "chunks.jsonl"
-DEFAULT_OUTPUT = PROJECT_DIR / "chunks" / "chunks.csv"
+PROJECT_ROOT = Path(__file__).resolve().parents[1]
+DEFAULT_INPUT = PROJECT_ROOT / "chunks" / "chunks.jsonl"
+DEFAULT_OUTPUT = PROJECT_ROOT / "chunks" / "chunks.csv"
 FIELDNAMES = [
     "chunk_id",
     "source_file",
