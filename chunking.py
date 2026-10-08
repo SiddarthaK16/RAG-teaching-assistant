@@ -58,8 +58,8 @@ def main() -> int:
     )
     parser.add_argument("--input-dir", type=Path, default=DEFAULT_TRANSCRIPT_DIR)
     parser.add_argument("--output", type=Path, default=DEFAULT_OUTPUT)
-    parser.add_argument("--max-words", type=int, default=400, help="Maximum words per chunk (default: 400).")
-    parser.add_argument("--overlap-words", type=int, default=60, help="Words repeated between chunks (default: 60).")
+    parser.add_argument("--max-words", type=int, default=280, help="Maximum words per chunk (default: 280).")
+    parser.add_argument("--overlap-words", type=int, default=40, help="Words repeated between chunks (default: 40).")
     args = parser.parse_args()
 
     if args.max_words < 1 or args.overlap_words < 0 or args.overlap_words >= args.max_words:

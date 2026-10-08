@@ -3,10 +3,14 @@
 from __future__ import annotations
 
 import argparse
+import csv
 import json
 from pathlib import Path
 
-import pandas as pd
+try:
+    import pandas as pd
+except ImportError:
+    pd = None
 
 
 PROJECT_DIR = Path(__file__).resolve().parent
@@ -46,8 +50,14 @@ def main() -> int:
         parser.error(f"Invalid JSON in {args.input}, line {error.lineno}: {error.msg}")
 
     args.output.parent.mkdir(parents=True, exist_ok=True)
-    dataframe = pd.DataFrame(rows, columns=FIELDNAMES)
-    dataframe.to_csv(args.output, index=False, encoding="utf-8-sig")
+    if pd is not None:
+        dataframe = pd.DataFrame(rows, columns=FIELDNAMES)
+        dataframe.to_csv(args.output, index=False, encoding="utf-8-sig")
+    else:
+        with args.output.open("w", encoding="utf-8-sig", newline="") as output_file:
+            writer = csv.DictWriter(output_file, fieldnames=FIELDNAMES, extrasaction="ignore")
+            writer.writeheader()
+            writer.writerows(rows)
 
     print(f"Exported {len(rows)} chunk(s) to {args.output}")
     return 0

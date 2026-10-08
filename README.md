@@ -101,10 +101,10 @@ After the transcripts are ready, run:
 python .\chunking.py
 ```
 
-This reads JSON files from `transcripts/` and writes one JSON object per line to `chunks/chunks.jsonl`. Each chunk includes its text, source video, start/end times, and word count. The defaults are 400 words per chunk with 60 words repeated between neighboring chunks. To change those settings or the paths:
+This reads JSON files from `transcripts/` and writes one JSON object per line to `chunks/chunks.jsonl`. Each chunk includes its text, source video, start/end times, and word count. The defaults are 280 words per chunk with 40 words repeated between neighboring chunks. This smaller size is intended to stay within the local BGE embedding model's 512-token input limit. To change those settings or the paths:
 
 ```powershell
-python .\chunking.py --max-words 400 --overlap-words 60 --output .\chunks\chunks.jsonl
+python .\chunking.py --max-words 280 --overlap-words 40 --output .\chunks\chunks.jsonl
 ```
 
 The generated `chunks/` folder is ignored by Git, like the source transcripts.

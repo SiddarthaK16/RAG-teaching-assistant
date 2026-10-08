@@ -1,2 +1,5 @@
 openai-whisper
 pandas
+jupyter
+ipykernel
+sentence-transformers
