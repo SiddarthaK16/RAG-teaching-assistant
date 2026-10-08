@@ -23,7 +23,7 @@ This should make it easier to locate a topic, but results will depend on transcr
 - The project contains 11 downloaded MIT 15.773 lecture videos in `videos/`.
 - The videos have consistent, numbered filenames.
 - Whisper is installed in the Conda environment named `rag` (Python 3.12).
-- Transcript generation and timestamped chunking are implemented. Embeddings, retrieval, and the assistant interface are still to be built.
+- Transcript generation, timestamped chunking, local embedding, and similarity search scripts are implemented. The assistant interface is still to be built.
 
 Large media and generated artifacts are excluded from Git in `.gitignore`.
 
@@ -91,7 +91,7 @@ The script uses CUDA if PyTorch detects an NVIDIA GPU; otherwise, it uses the CP
 python .\transcribing.py --overwrite
 ```
 
-The model and transcripts stay local. If the later embedding step uses OpenAI's API, transcript chunks will be sent to that API for embedding.
+The model and transcripts stay local. This project uses `BAAI/bge-small-en-v1.5` for local embeddings; its model weights download from Hugging Face the first time the embedding or search script runs.
 
 ### 6. Create timestamped transcript chunks
 
@@ -115,7 +115,29 @@ To make a CSV copy for spreadsheet inspection, run:
 python .\chunks_to_csv.py
 ```
 
-This writes `chunks/chunks.csv`, with one row per chunk and separate columns for the lecture, timestamps, word count, and text. The JSONL file remains the convenient input format for later embedding.
+This writes `chunks/chunks.csv`, with one row per chunk and separate columns for the lecture, timestamps, word count, and text. The JSONL file remains the input format for embedding.
+
+### 7. Build and search the local vector index
+
+Install the project dependencies if you have not already:
+
+```powershell
+python -m pip install -r requirements.txt
+```
+
+Create embeddings for the chunks and save them in the local Chroma database:
+
+```powershell
+python .\embed_chunks.py
+```
+
+Search for a topic or question:
+
+```powershell
+python .\search_chunks.py "How does transfer learning work?"
+```
+
+The first run downloads `BAAI/bge-small-en-v1.5`. After that, embedding and search run locally. The vector database is stored in `chroma_db/`, which is ignored by Git.
 
 ## Planned data for each chunk
 
@@ -131,5 +153,5 @@ Keeping this metadata with the embedding lets search results identify both the r
 ## Notes
 
 - Local Whisper transcription runs on the CPU on this machine and may take a while for all lectures.
-- If OpenAI's embeddings API is used, transcript chunks are sent to that API for embedding; the videos and vector database can remain local.
+- The BGE embedding model accepts at most 512 tokens per input. The embedding script reports chunks that exceed that limit and will be truncated by the model.
 - Review transcript samples before indexing everything, especially where technical vocabulary or lecture audio is unclear.
