@@ -1,5 +1,6 @@
 /videos/
 /transcripts/
+/chunks/
 /.venv/
 /.env
 /.env.*

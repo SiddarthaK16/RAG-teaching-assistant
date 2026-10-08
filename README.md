@@ -23,7 +23,7 @@ This should make it easier to locate a topic, but results will depend on transcr
 - The project contains 11 downloaded MIT 15.773 lecture videos in `videos/`.
 - The videos have consistent, numbered filenames.
 - Whisper is installed in the Conda environment named `rag` (Python 3.12).
-- Transcript generation, chunking, embeddings, retrieval, and the assistant interface are still to be built.
+- Transcript generation and timestamped chunking are implemented. Embeddings, retrieval, and the assistant interface are still to be built.
 
 Large media and generated artifacts are excluded from Git in `.gitignore`.
 
@@ -45,7 +45,7 @@ conda create -n rag python=3.12 -y
 conda activate rag
 conda install -c conda-forge ffmpeg -y
 python -m pip install --upgrade pip
-python -m pip install -U openai-whisper
+python -m pip install -r requirements.txt
 ```
 
 ### 3. Add the videos
@@ -92,6 +92,30 @@ python .\transcribing.py --overwrite
 ```
 
 The model and transcripts stay local. If the later embedding step uses OpenAI's API, transcript chunks will be sent to that API for embedding.
+
+### 6. Create timestamped transcript chunks
+
+After the transcripts are ready, run:
+
+```powershell
+python .\chunking.py
+```
+
+This reads JSON files from `transcripts/` and writes one JSON object per line to `chunks/chunks.jsonl`. Each chunk includes its text, source video, start/end times, and word count. The defaults are 400 words per chunk with 60 words repeated between neighboring chunks. To change those settings or the paths:
+
+```powershell
+python .\chunking.py --max-words 400 --overlap-words 60 --output .\chunks\chunks.jsonl
+```
+
+The generated `chunks/` folder is ignored by Git, like the source transcripts.
+
+To make a CSV copy for spreadsheet inspection, run:
+
+```powershell
+python .\chunks_to_csv.py
+```
+
+This writes `chunks/chunks.csv`, with one row per chunk and separate columns for the lecture, timestamps, word count, and text. The JSONL file remains the convenient input format for later embedding.
 
 ## Planned data for each chunk
 
