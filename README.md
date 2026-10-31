@@ -166,6 +166,23 @@ streamlit run src/app.py
 
 The app provides Ask, Explain, Summarize, and Quiz modes, shows local model/index status, and lets you expand a citation to read its transcript excerpt or play the local video from that timestamp.
 
+### 9. Ingest YouTube playlists
+
+Ingest YouTube playlists directly into the teaching assistant. The pipeline automatically uses YouTube captions when available (fast path) or falls back to Whisper transcription (quality path).
+
+```bash
+# Ingest a playlist (uses captions when available)
+python src/ingest_youtube.py "https://youtube.com/playlist?list=PLxxxxxx"
+
+# Force Whisper transcription for all videos
+python src/ingest_youtube.py "https://youtube.com/playlist?list=PLxxxxxx" --force-whisper
+
+# Use a specific Whisper model
+python src/ingest_youtube.py "https://youtube.com/playlist?list=PLxxxxxx" --whisper-model small
+```
+
+See [YouTube Ingestion Guide](docs/youtube_ingestion.md) for full documentation including FastAPI usage.
+
 ## Planned data for each chunk
 
 Each indexed chunk should retain at least:
