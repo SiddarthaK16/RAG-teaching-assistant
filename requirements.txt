@@ -5,3 +5,10 @@ ipykernel
 sentence-transformers
 chromadb
 streamlit
+yt-dlp
+fastapi
+uvicorn[standard]
+websockets
+pydantic
+python-multipart
+pytest
